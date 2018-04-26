@@ -1,11 +1,15 @@
-var express = require("express");
-var fs = require("fs");
-var app = express();
+const express = require("express");
+const fs = require("fs");
+const axios = require("axios");
+const app = express();
 
-var server = require("https").createServer(
+import Auth from './auth/Auth';
+const auth = new Auth();
+
+const server = require("https").createServer(
   {
-    key: fs.readFileSync('/etc/ssl/privateblog.key'),
-    cert: fs.readFileSync('/etc/ssl/privateblog.crt')
+    key: fs.readFileSync("/etc/ssl/privateblog.key"),
+    cert: fs.readFileSync("/etc/ssl/privateblog.crt")
   },
   app
 );
@@ -19,9 +23,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/api/auth/fb', (req, res) => {
-  console.log(req.query.code);
-  res.send('O, zdorova!');
-})
+app.get("/api/auth/fb", auth.get);
 
-server.listen(3000, () => console.log('listen 3000'));
+server.listen(3000, () => console.log("listen 3000"));

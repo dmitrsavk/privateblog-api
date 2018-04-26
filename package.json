@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run compile && node ./dist/server.js",
+    "compile": "babel ./src --presets es2017 --plugins transform-es2015-modules-commonjs -d ./dist"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,10 @@
   },
   "homepage": "https://github.com/dmitrsavk/privateblog-api#readme",
   "dependencies": {
+    "axios": "^0.18.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-preset-es2017": "^6.24.1",
     "body-parser": "^1.18.2",
     "connect-pg-simple": "^4.2.1",
     "cookie-parser": "^1.4.3",
