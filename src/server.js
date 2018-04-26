@@ -19,8 +19,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/api', (req, res) => {
-  console.log('lol');
+app.get('/api/auth/fb', (req, res) => {
+  console.log(req.query.code);
   res.send('O, zdorova!');
 })
 
