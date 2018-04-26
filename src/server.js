@@ -1,18 +1,22 @@
-const express = require('express');
+var express = require("express");
+var fs = require("fs");
+var app = express();
 
-const PORT = 3001;
-
-const router = express.Router();
-const app = express();
+var server = require("https").createServer(
+  {
+    key: fs.readFileSync('/etc/ssl/privateblog.key'),
+    cert: fs.readFileSync('/etc/ssl/privateblog.crt')
+  },
+  app
+);
 
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://privateblog.ru');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Origin", "https://privateblog.ru");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 
-app.get('/api/auth/fb', (req, res) => res.redirect('/'))
-
-app.listen(PORT, () => {
-  console.log(`Server listening on: ${PORT}`);
-});
+server.listen(443);
