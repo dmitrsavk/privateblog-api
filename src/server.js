@@ -19,4 +19,9 @@ app.use(function(req, res, next) {
   next();
 });
 
-server.listen(443);
+app.get('/api', (req, res) => {
+  console.log('lol');
+  res.send('O, zdorova!');
+})
+
+server.listen(3000, () => console.log('listen 3000'));
