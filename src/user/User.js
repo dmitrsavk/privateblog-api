@@ -9,6 +9,6 @@ export default class User {
   async get(req, res) {
     const id = DB.session[req.cookies.session];
     const data = id && DB.user[id] || {};
-    res.json(JSON.stringify(data));
+    res.json(data);
   }
 }
