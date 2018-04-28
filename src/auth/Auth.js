@@ -3,10 +3,8 @@ const fbId = require("/root/fb.json").id;
 const clientId = 159008188111833;
 const redirectUrl = "https://privateblog.ru/api/auth/fb";
 
-export const DB = {
-  session: {},
-  user: {}
-};
+import User from "../user/UserModel";
+import Session from "../auth/SessionModel";
 
 export default class Auth {
   async get(req, res) {
@@ -20,16 +18,11 @@ export default class Auth {
       `https://graph.facebook.com/me?access_token=${response.data.access_token}`
     );
 
-    let options = {
-      maxAge: 24 * 60 * 60 * 1000
-    }
+    req.session.save();
 
-    res.cookie('session', req.sessionID, options)
+    await Session.create({ sessionId: req.sessionID, userId: user.data.id });
+    await User.create({ userId: user.data.id, name: user.data.name });
 
-    DB.session[req.sessionID] = user.data.id;
-    DB.user[user.data.id] = { name: user.data.name }
-
-    // const ava = await axios(`http://graph.facebook.com/${user.data.id}/picture?type=square`);
-    res.redirect('/')
+    res.redirect("/");
   }
 }
