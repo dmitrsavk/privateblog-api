@@ -1,16 +1,19 @@
 const express = require("express");
 const fs = require("fs");
 const cookieParser = require("cookie-parser");
+const bodyParser = require('body-parser')
 
 import session from "express-session";
 
 import Auth from "./auth/Auth";
 import User from "./user/User";
+import Blog from './blog/Blog'
 
 const app = express();
 
 const auth = new Auth();
 const user = new User();
+const blog = new Blog();
 
 const server = require("https").createServer(
   {
@@ -37,6 +40,7 @@ app.use(
 );
 
 app.use(cookieParser());
+app.use(bodyParser())
 
 app.use(function(req, res, next) {
   const origins = ["https://privateblog.ru", "https://privateblog.ru:3000"];
@@ -57,5 +61,6 @@ app.use(function(req, res, next) {
 app.get("/api/auth/fb", auth.get);
 app.get("/api/user", user.get);
 app.get("/api/user/logout", user.logout);
+app.post("/api/blog", blog.save);
 
 server.listen(3001, () => console.log("listen 3001"));

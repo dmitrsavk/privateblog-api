@@ -5,6 +5,7 @@ const redirectUrl = "https://privateblog.ru/api/auth/fb";
 
 import Session from "../auth/SessionModel";
 import UserModel from "./UserModel";
+import RecordModel from '../record/RecordModel'
 
 export default class User {
   async get(req, res) {
@@ -13,14 +14,18 @@ export default class User {
     let user = {};
 
     if (session) {
-      user = await UserModel.findOne({ where: { userId: session.userId } })
+      user = await UserModel.findOne({ where: { userId: session.userId } });
+
+      if (user.recordIds) {
+        user.dataValues.records = await RecordModel.findAll({where: {id: user.recordIds}})
+      }
     }
 
     res.json(user);
   }
 
   async logout(req, res) {
-    await res.session.destroy();
+    await req.session.destroy();
 
     res.redirect("/");
   }

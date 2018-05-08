@@ -2,24 +2,16 @@ const db = require('../db');
 
 import * as Sequelize from 'sequelize';
 
-const UserModel = db.define('users', {
+const RecordModel = db.define('records', {
 	id: {
     autoIncrement: true,
     primaryKey: true,
     type: Sequelize.INTEGER,
     field: 'id'
   },
-	name: {
-		type: Sequelize.STRING,
-		field: 'name'
-  },
-  userId: {
-		type: Sequelize.STRING,
-		field: 'user_id'
-  },
-  recordIds: {
-    type: Sequelize.ARRAY(Sequelize.INTEGER),
-    field: 'record_ids'
+	text: {
+		type: Sequelize.TEXT,
+		field: 'text'
   },
   createdAt: {
     field: 'created_at',
@@ -31,4 +23,4 @@ const UserModel = db.define('users', {
   },
 });
 
-export default UserModel;
+export default RecordModel;

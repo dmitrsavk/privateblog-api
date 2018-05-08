@@ -21,7 +21,10 @@ export default class Auth {
     req.session.save();
 
     await Session.create({ sessionId: req.sessionID, userId: user.data.id });
-    await User.create({ userId: user.data.id, name: user.data.name });
+
+    if (!(await User.findOne({ where: { userId: user.data.id } }))) {
+      await User.create({ userId: user.data.id, name: user.data.name });
+    }
 
     res.redirect("/");
   }
