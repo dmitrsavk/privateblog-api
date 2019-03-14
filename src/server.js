@@ -1,19 +1,19 @@
 const express = require("express");
-const fs = require("fs");
 const cookieParser = require("cookie-parser");
-const bodyParser = require('body-parser')
-
-import session from "express-session";
+const bodyParser = require("body-parser");
+const fs = require("fs");
 
 import Auth from "./auth/Auth";
 import User from "./user/User";
-import Blog from './blog/Blog'
+import Blog from "./blog/Blog";
+import Image from "./image/Image";
 
 const app = express();
 
 const auth = new Auth();
 const user = new User();
 const blog = new Blog();
+const image = new Image();
 
 const server = require("https").createServer(
   {
@@ -23,27 +23,15 @@ const server = require("https").createServer(
   app
 );
 
-app.set("trust proxy", true);
-
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: true,
-    secret: "123qwe",
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-      secure: true
-    },
-    name: "sessionId",
-    secure: true
-  })
-);
-
 app.use(cookieParser());
-app.use(bodyParser())
+app.use(bodyParser());
 
 app.use(function(req, res, next) {
-  const origins = ["https://privateblog.ru", "https://privateblog.ru:3000"];
+  const origins = [
+    "https://privateblog.ru",
+    "https://privateblog.ru:3000",
+    "https://privateblog.ru:8080"
+  ];
 
   if (~origins.indexOf(req.headers.origin)) {
     res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -58,9 +46,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get("/api/auth/fb", auth.get);
+app.post("/api/auth/fb", auth.get);
+app.post("/api/auth/vk", auth.getVk);
 app.get("/api/user", user.get);
 app.get("/api/user/logout", user.logout);
 app.post("/api/blog", blog.save);
+app.post("/api/blog/delete", blog.delete);
+app.get("/api/image", image.get);
 
 server.listen(3001, () => console.log("listen 3001"));

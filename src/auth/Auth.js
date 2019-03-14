@@ -1,31 +1,41 @@
 const axios = require("axios");
-const fbId = require("/root/fb.json").id;
-const clientId = 159008188111833;
-const redirectUrl = "https://privateblog.ru/api/auth/fb";
+const vkId = require("/root/fb.json").vk;
+const redirectVk = "https://privateblog.ru/api/auth/vk";
 
 import User from "../user/UserModel";
-import Session from "../auth/SessionModel";
 
 export default class Auth {
   async get(req, res) {
-    const response = await axios(
-      `https://graph.facebook.com/v2.12/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUrl}&client_secret=${fbId}&code=${
-        req.query.code
-      }`
-    );
+    const sid = req.headers.sid;
+    const user = req.body;
 
-    const user = await axios(
-      `https://graph.facebook.com/me?access_token=${response.data.access_token}`
-    );
-
-    req.session.save();
-
-    await Session.create({ sessionId: req.sessionID, userId: user.data.id });
-
-    if (!(await User.findOne({ where: { userId: user.data.id } }))) {
-      await User.create({ userId: user.data.id, name: user.data.name });
+    if (!(await User.findOne({ where: { userId: user.id } }))) {
+      await User.create({
+        userId: user.id,
+        name: user.name,
+        sid
+      });
+    } else {
+      await User.update({ sid }, { where: { userId: user.id } });
     }
 
-    res.redirect("/");
+    res.end();
+  }
+
+  async getVk(req, res) {
+    const sid = req.headers.sid;
+    const user = req.body;
+
+    if (!(await User.findOne({ where: { userIdVk: user.id.toString() } }))) {
+      await User.create({
+        userIdVk: user.id.toString(),
+        name: `${user.first_name} ${user.last_name}`,
+        sid
+      });
+    } else {
+      User.update({ sid }, { where: { userIdVk: user.id.toString() } });
+    }
+
+    res.end();
   }
 }

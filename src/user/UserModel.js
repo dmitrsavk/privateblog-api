@@ -21,6 +21,10 @@ const UserModel = db.define('users', {
     type: Sequelize.ARRAY(Sequelize.INTEGER),
     field: 'record_ids'
   },
+  sid: {
+    type: Sequelize.STRING,
+    field: 'sid'
+  },
   createdAt: {
     field: 'created_at',
     type: Sequelize.DATE
@@ -29,6 +33,10 @@ const UserModel = db.define('users', {
     field: 'updated_at',
     type: Sequelize.DATE
   },
+  userIdVk: {
+    field: 'user_id_vk',
+    type: Sequelize.STRING
+  }
 });
 
 export default UserModel;
